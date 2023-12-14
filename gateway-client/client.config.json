@@ -1,0 +1,8 @@
+{
+  "services": {
+    "dummy": {
+      "repository": "appstack-io/dummy-service",
+      "branch": "main"
+    }
+  }
+}

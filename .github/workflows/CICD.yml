@@ -1,0 +1,111 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_all:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Semver Check
+        uses: cocogitto/cocogitto-action@v3
+        with:
+          check-latest-tag-only: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.17'
+          scope: '@appstack-io'
+
+      - name: Configure NPM
+        run: echo "APPSTACKIO_NPM_TOKEN=${{ secrets.NPM_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Client - Install Dependencies
+        working-directory: ./client
+        run: npm ci
+
+      - name: Client - Run Tests
+        working-directory: ./client
+        run: npm run build && npm test
+
+      - name: Gateway - Install Dependencies
+        working-directory: ./gateway
+        run: npm ci
+
+      - name: Gateway - Run Tests
+        working-directory: ./gateway
+        run: npm run build && npm test
+
+      - name: Gateway Client - Install Dependencies
+        working-directory: ./gateway-client
+        run: npm ci
+
+      - name: Gateway Client - Run Tests
+        working-directory: ./gateway-client
+        run: npm run build && npm test
+
+      - name: Semver release
+        if: github.ref == 'refs/heads/main'
+        uses: cocogitto/cocogitto-action@v3
+        id: release
+        with:
+          check-latest-tag-only: true
+          release: true
+          git-user: 'Cog Bot'
+          git-user-email: 'cogbot@appstack-io'
+
+      - name: Update package.json version
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.version
+        run: |
+          cd ./client && node update-version.js
+          cd ../gateway && node update-version.js
+          cd ../gateway-client && node update-version.js
+
+      - name: Commit and push updated package.json
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.version
+        run: |
+          git config --local user.email "action@appstack-io"
+          git config --local user.name "GitHub Action"
+          git commit -am "chore: bump version to $(cat package.json | jq -r .version)"
+          git push
+
+      - name: Publish Clients
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.version
+        run: |
+          cd ./client && npm publish
+          cd ../gateway-client && npm publish
+
+      - name: Login to GitHub Container Registry
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.version
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Gateway Docker Image
+        uses: docker/build-push-action@v2
+        env:
+          VERSION_TAG: ghcr.io/${{ github.repository }}/dummy-service1.workers:${{ steps.release.outputs.version }}
+        with:
+          context: .
+          file: gateway.Dockerfile
+          push: ${{ github.ref == 'refs/heads/main' && steps.release.outputs.version>'' }}
+          tags: |
+            ghcr.io/${{ github.repository }}/dummy-service1.gateway:latest
+            ${{ github.ref == 'refs/heads/main' && env.VERSION_TAG }}
+
+
