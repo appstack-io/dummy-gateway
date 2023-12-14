@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file. See [conven
 - - -
 ## 1.0.1 - 2023-12-14
 #### Bug Fixes
+- init - (fd080d8) - orgal
+- init - (52ca567) - orgal
+- init - (520b709) - orgal
+- init - (d664854) - orgal
+- init - (afe36dc) - orgal
+#### Miscellaneous Chores
+- **(version)** 1.0.1 - (55167f7) - Cog
+- bump version to - (2382552) - GitHub Action
+- - -
+
+## 1.0.1 - 2023-12-14
+#### Bug Fixes
 - init - (afe36dc) - orgal
 - - -
 
