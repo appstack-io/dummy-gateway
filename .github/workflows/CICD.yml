@@ -103,7 +103,7 @@ jobs:
       - name: Build and Push Gateway Docker Image
         uses: docker/build-push-action@v2
         env:
-          VERSION_TAG: ghcr.io/${{ github.repository }}/dummy-service1.workers:${{ steps.release.outputs.version }}
+          VERSION_TAG: ghcr.io/${{ github.repository }}/dummy-gateway:${{ steps.release.outputs.version }}
         with:
           context: .
           file: gateway.Dockerfile
