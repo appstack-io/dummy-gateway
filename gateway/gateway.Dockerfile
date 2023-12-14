@@ -12,4 +12,4 @@ FROM gcr.io/distroless/nodejs:18
 WORKDIR /app
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
-CMD ["/app/dist/main/gateway.index.js"]
+CMD ["/app/dist/main/index.js"]
