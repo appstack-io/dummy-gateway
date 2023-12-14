@@ -6,7 +6,7 @@ const t = require('@babel/types');
 const generator = require('@babel/generator').default;
 
 const sourceFilePath = `${__dirname}/src/combined.ts`; // Path to your definitions file
-const outputFolderPath = `${__dirname}/src/client`; // Folder where the generated classes will be placed
+const outputFolderPath = `${__dirname}/src`; // Folder where the generated classes will be placed
 
 function copyDirSync(src, dest) {
   try {
@@ -168,7 +168,4 @@ const indexContent = [...serviceNames, `google/protobuf/empty`]
   .map((ex) => `export * from './${ex}';`)
   .join('\n');
 fs.writeFileSync(`${outputFolderPath}/index.ts`, indexContent);
-copyDirSync(`${__dirname}/src/google`, `${outputFolderPath}/google`);
-fs.rmSync(`${__dirname}/src/combined.proto`);
 fs.rmSync(`${__dirname}/src/combined.ts`);
-fs.rmdirSync(`${__dirname}/src/google`, { recursive: true });

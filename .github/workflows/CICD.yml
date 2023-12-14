@@ -43,7 +43,9 @@ jobs:
 
       - name: Gateway - Install Dependencies
         working-directory: ./gateway
-        run: npm ci
+        run: |
+          npm ci
+          npm run import-client
 
       - name: Gateway - Run Tests
         working-directory: ./gateway
@@ -51,7 +53,9 @@ jobs:
 
       - name: Gateway Client - Install Dependencies
         working-directory: ./gateway-client
-        run: npm ci
+        run: |
+          npm ci
+          npm run import-client
 
       - name: Gateway Client - Run Tests
         working-directory: ./gateway-client
