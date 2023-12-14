@@ -37,9 +37,15 @@ jobs:
         working-directory: ./client
         run: npm ci
 
+      - name: Client - Build
+        working-directory: ./client
+        run: |
+          npm run proto:generate-client
+          npm run build
+
       - name: Client - Run Tests
         working-directory: ./client
-        run: npm run build && npm test
+        run: npm test
 
       - name: Start Docker Compose
         working-directory: ./gateway
@@ -57,13 +63,17 @@ jobs:
           echo "GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}" >> $GITHUB_ENV
           echo "ASIO_SESSION_SECRET=${{ secrets.ASIO_SESSION_SECRET }}" >> $GITHUB_ENV
 
+      - name: Gateway - Build
+        working-directory: ./gateway
+        run: npm run build
+
       - name: Gateway - Run Tests
         working-directory: ./gateway
         run: |
           echo "127.0.0.1 user" | sudo tee -a /etc/hosts
           echo "127.0.0.1 login" | sudo tee -a /etc/hosts
           echo "127.0.0.1 permission" | sudo tee -a /etc/hosts
-          npm run build && npm test
+          npm test
 
       - name: Gateway Client - Install Dependencies
         working-directory: ./gateway-client
@@ -71,9 +81,15 @@ jobs:
           npm ci
           npm run import-client
 
+      - name: Gateway Client - Build
+        working-directory: ./gateway-client
+        run: |
+          npm run proto:generate-client
+          npm run build
+
       - name: Gateway Client - Run Tests
         working-directory: ./gateway-client
-        run: npm run build && npm test
+        run: npm test
 
       - name: Semver release
         if: github.ref == 'refs/heads/main'
