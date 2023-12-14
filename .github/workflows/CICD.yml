@@ -131,8 +131,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Gateway Docker Image
-        uses: docker/build-push-action@v2
         working-directory: ./gateway
+        uses: docker/build-push-action@v2
         env:
           VERSION_TAG: ghcr.io/${{ github.repository }}/dummy-gateway:${{ steps.release.outputs.version }}
         with:
