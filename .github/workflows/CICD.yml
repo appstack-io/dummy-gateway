@@ -131,13 +131,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Gateway Docker Image
-        working-directory: ./gateway
         uses: docker/build-push-action@v2
         env:
           VERSION_TAG: ghcr.io/${{ github.repository }}/dummy-gateway:${{ steps.release.outputs.version }}
         with:
-          context: .
-          file: gateway.Dockerfile
+          context: ./gateway
+          file: ./gateway/gateway.Dockerfile
           push: ${{ github.ref == 'refs/heads/main' && steps.release.outputs.version>'' }}
           tags: |
             ghcr.io/${{ github.repository }}/dummy-service1.gateway:latest
