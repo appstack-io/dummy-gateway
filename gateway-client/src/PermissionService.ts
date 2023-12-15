@@ -184,7 +184,7 @@ import { postToUnary } from './utils';
 
 export class PermissionService {
   private readonly serviceName: string = "PermissionService";
-  private opts = { host: 'aaa', port: '0' }
+  private opts = { host: 'http://localhost', port: '5000' }
   
   
     async createOne(data: Partial<PermissionCreateOneInput>): Promise<Permission> {

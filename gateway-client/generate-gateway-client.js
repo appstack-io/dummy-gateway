@@ -4,7 +4,7 @@ const parser = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const t = require('@babel/types');
 const generator = require('@babel/generator').default;
-
+const config = require('./client.config.json');
 const sourceFilePath = `${__dirname}/src/combined.ts`; // Path to your definitions file
 const outputFolderPath = `${__dirname}/src`; // Folder where the generated classes will be placed
 
@@ -89,7 +89,7 @@ const generateInterfaces = (types, ast) => {
 const utilsContent = `import axios from 'axios';
 
 export async function postToUnary<T>(serviceName: string, methodName: string, data: any, opts: {host: string, port: string}): Promise<T> {
-  const response = await axios.post(\`http://\${opts.host}:\${opts.port}/gateway/unary\`, {
+  const response = await axios.post(\`\${opts.host}:\${opts.port}/gateway/unary\`, {
     service: serviceName,
     method: methodName,
     data,
@@ -115,11 +115,14 @@ const generateServiceClass = (serviceName, methods, types) => {
 
   const interfaceDefinitions = generateInterfaces(types, ast);
 
+  let buildProfile =
+    config.profiles[process.env.ASIO_GATEWAY_CLIENT_BUILD_PROFILE || 'local'];
+
   let result = `${interfaceDefinitions}\n\nimport { postToUnary } from './utils';
 
 export class ${serviceName} {
   private readonly serviceName: string = "${serviceName}";
-  private opts = { host: '${'aaa'}', port: '${'0'}' }
+  private opts = { host: '${buildProfile.host}', port: '${buildProfile.port}' }
   
   ${methodStrings.join('')}
 }
@@ -168,4 +171,4 @@ const indexContent = [...serviceNames, `google/protobuf/empty`]
   .map((ex) => `export * from './${ex}';`)
   .join('\n');
 fs.writeFileSync(`${outputFolderPath}/index.ts`, indexContent);
-fs.rmSync(`${__dirname}/src/combined.ts`);
+// fs.rmSync(`${__dirname}/src/combined.ts`);

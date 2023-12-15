@@ -20,7 +20,7 @@ import { postToUnary } from './utils';
 
 export class WorkersService {
   private readonly serviceName: string = "WorkersService";
-  private opts = { host: 'aaa', port: '0' }
+  private opts = { host: 'http://localhost', port: '5000' }
   
   
     async publishJob(data: Partial<PublishJobInput>): Promise<PublishJobResult> {

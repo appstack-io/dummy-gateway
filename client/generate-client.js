@@ -4,7 +4,7 @@ const parser = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const t = require('@babel/types');
 const generator = require('@babel/generator').default;
-
+const { exec } = require('child_process');
 const sourceFilePath = `${__dirname}/src/combined.ts`; // Path to your definitions file
 const outputFolderPath = `${__dirname}/src/client`; // Folder where the generated classes will be placed
 
@@ -86,19 +86,39 @@ const generateInterfaces = (types, ast) => {
 };
 
 // Generate the utility file (utils.ts)
-const utilsContent = `
-import * as clientLib from '../combined.ts';
-import { ClientService } from '../combined.ts';
+const utilsContent = `import * as clientLib from '../combined';
+import { Metadata } from 'nice-grpc';
 
-export async function postToUnary<T>(serviceName: string, methodName: string, data: any): Promise<T> {
-  const definition = clientLib[\`${service}Definition\`];
-    const host = service.toLowerCase().replace('service', '');
-    const client = this.clientService.getClient(definition, {
-      host,
-      port: process.env.ASIO_MS_PUBLIC_PORT,
-    });
-    const result = await client[method](data, { metadata });
-    return result;
+export async function postToUnary<T>(
+  serviceName: string,
+  methodName: string,
+  data: any,
+  metadata: Metadata,
+): Promise<T> {
+  const definition = clientLib[\`\${serviceName}Definition\`];
+  const host = serviceName.toLowerCase().replace('service', '');
+  const client = this.clientService.getClient(definition, {
+    host,
+    port: process.env.ASIO_MS_PRIVATE_PORT,
+  });
+  const result = await client[methodName](data, { metadata });
+  return result;
+}
+
+export async function postToUnaryPublic<T>(
+  serviceName: string,
+  methodName: string,
+  data: any,
+  metadata: Metadata,
+): Promise<T> {
+  const definition = clientLib[\`\${serviceName}Definition\`];
+  const host = serviceName.toLowerCase().replace('service', '');
+  const client = this.clientService.getClient(definition, {
+    host,
+    port: process.env.ASIO_MS_PUBLIC_PORT,
+  });
+  const result = await client[methodName](data, { metadata });
+  return result;
 }
 `;
 
@@ -111,21 +131,28 @@ let serviceNames = [];
 const generateServiceClass = (serviceName, methods, types) => {
   const methodStrings = methods.map(
     (method) => `
-    async ${method.name}(data: Partial<${method.requestType}>): Promise<${method.responseType}> {
-      return postToUnary<${method.responseType}>(this.serviceName, '${method.name}', data);
+    async ${method.name}(data: Partial<${method.requestType}>, metadata: Metadata=new Metadata()): Promise<${method.responseType}> {
+      return postToUnary<${method.responseType}>(this.serviceName, '${method.name}', data, metadata);
+    }
+    
+    async ${method.name}Public(data: Partial<${method.requestType}>, metadata: Metadata=new Metadata()): Promise<${method.responseType}> {
+      return postToUnaryPublic<${method.responseType}>(this.serviceName, '${method.name}', data, metadata);
     }
   `,
   );
 
   const interfaceDefinitions = generateInterfaces(types, ast);
 
-  let result = `${interfaceDefinitions}\n\nimport { postToUnary } from './utils';
-
-export class ${serviceName} {
-  private readonly serviceName: string = "${serviceName}";
-  
-  ${methodStrings.join('')}
-}
+  let result = `
+  ${interfaceDefinitions}
+  import { postToUnary, postToUnaryPublic } from './utils';
+  import { Metadata } from 'nice-grpc';
+ 
+  export class ${serviceName} {
+    private readonly serviceName: string = "${serviceName}";
+    
+    ${methodStrings.join('')}
+  }
 `;
   if (result.indexOf('Empty') > -1) {
     result = `import { Empty } from './google/protobuf/empty';\n${result}`;
@@ -166,9 +193,9 @@ traverse(ast, {
   },
 });
 
+exec(`cp -r ${__dirname}/src/google ${__dirname}/src/client`);
 // Generate the index file
 const indexContent = [...serviceNames, `google/protobuf/empty`]
   .map((ex) => `export * from './${ex}';`)
   .join('\n');
 fs.writeFileSync(`${outputFolderPath}/index.ts`, indexContent);
-fs.rmSync(`${__dirname}/src/combined.ts`);

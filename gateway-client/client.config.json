@@ -1,8 +1,16 @@
 {
-  "services": {
-    "dummy": {
-      "repository": "appstack-io/dummy-service",
-      "branch": "main"
+  "profiles": {
+    "local": {
+      "host": "http://localhost",
+      "port": "5000"
+    },
+    "dev": {
+      "host": "http://localhost",
+      "port": "5000"
+    },
+    "production": {
+      "host": "http://api.dummy.com",
+      "port": "5000"
     }
   }
 }

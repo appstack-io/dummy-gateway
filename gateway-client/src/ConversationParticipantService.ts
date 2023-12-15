@@ -52,7 +52,7 @@ import { postToUnary } from './utils';
 
 export class ConversationParticipantService {
   private readonly serviceName: string = "ConversationParticipantService";
-  private opts = { host: 'aaa', port: '0' }
+  private opts = { host: 'http://localhost', port: '5000' }
   
   
     async createOne(data: Partial<ConversationParticipantCreateOneInput>): Promise<ConversationParticipant> {
