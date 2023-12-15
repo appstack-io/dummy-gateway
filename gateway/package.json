@@ -17,7 +17,7 @@
     "README.md"
   ],
   "scripts": {
-    "import-client": "rm -rf ./src/client && cp -r ../client/dist ./src/client",
+    "import-client": "rm -rf ./src/client && cp -r ../client/src ./src/client",
     "build": "nest build && rm -rf dist/tests",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest -i",

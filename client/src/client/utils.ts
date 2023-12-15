@@ -1,5 +1,5 @@
-import * as clientLib from '../combined';
-import { Metadata } from 'nice-grpc';
+import * as clientLib from './combined';
+import { createChannel, createClient, Metadata } from 'nice-grpc';
 
 export async function postToUnary<T>(
   serviceName: string,
@@ -9,10 +9,8 @@ export async function postToUnary<T>(
 ): Promise<T> {
   const definition = clientLib[`${serviceName}Definition`];
   const host = serviceName.toLowerCase().replace('service', '');
-  const client = this.clientService.getClient(definition, {
-    host,
-    port: process.env.ASIO_MS_PRIVATE_PORT,
-  });
+  const channel = createChannel(`${host}:${process.env.ASIO_MS_PRIVATE_PORT}`);
+  const client = createClient(definition, channel);
   const result = await client[methodName](data, { metadata });
   return result;
 }
@@ -25,10 +23,8 @@ export async function postToUnaryPublic<T>(
 ): Promise<T> {
   const definition = clientLib[`${serviceName}Definition`];
   const host = serviceName.toLowerCase().replace('service', '');
-  const client = this.clientService.getClient(definition, {
-    host,
-    port: process.env.ASIO_MS_PUBLIC_PORT,
-  });
+  const channel = createChannel(`${host}:${process.env.ASIO_MS_PUBLIC_PORT}`);
+  const client = createClient(definition, channel);
   const result = await client[methodName](data, { metadata });
   return result;
 }
