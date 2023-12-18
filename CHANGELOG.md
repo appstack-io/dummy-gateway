@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 3.0.1 - 2023-12-18
+#### Bug Fixes
+- no coverage because failing on empty.ts - (950da36) - orgal
+- hostmappings - (97ee7a2) - orgal
+- hostmappings - (7ffc1ae) - orgal
+- hostmappings - (2927934) - orgal
+- hostmappings - (2654d41) - orgal
+- hostmappings - (d7b105d) - orgal
+#### Miscellaneous Chores
+- bump version to - (389277e) - GitHub Action
+- - -
+
 ## 3.0.0 - 2023-12-16
 #### Features
 - better formed client - (2192108) - orgal
