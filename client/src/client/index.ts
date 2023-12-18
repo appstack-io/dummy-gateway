@@ -1,2 +1,11 @@
+export * from './DummyService';
+export * from './LoginService';
+export * from './UserService';
+export * from './PermissionService';
+export * from './UserFollowService';
+export * from './ConversationService';
+export * from './ConversationParticipantService';
+export * from './MessageService';
+export * from './WorkersService';
 export * from './google/protobuf/empty';
 export { Metadata } from 'nice-grpc';

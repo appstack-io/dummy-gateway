@@ -72,6 +72,7 @@ jobs:
         run: |
           echo "127.0.0.1 user" | sudo tee -a /etc/hosts
           echo "127.0.0.1 login" | sudo tee -a /etc/hosts
+          echo "127.0.0.1 dummy" | sudo tee -a /etc/hosts
           npm test
 
       - name: Gateway Client - Install Dependencies

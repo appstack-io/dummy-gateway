@@ -30,7 +30,7 @@
     "nice-grpc": "^2.1.7"
   },
   "devDependencies": {
-    "@appstack-io/proto": "^0.0.20",
+    "@appstack-io/proto": "^0.0.21",
     "@babel/generator": "^7.23.6",
     "@babel/parser": "^7.23.6",
     "@babel/traverse": "^7.23.6",

@@ -25,6 +25,7 @@ describe('Gateway', () => {
   beforeAll(async () => {
     await setupArangoDb();
     ports = await usePorts();
+    process.env.ASIO_MS_PORT = process.env.ASIO_MS_PUBLIC_PORT;
     host = useHost();
     if (!isE2E())
       await runMain({
