@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 3.0.0 - 2023-12-16
+#### Features
+- better formed client - (2192108) - orgal
+#### Miscellaneous Chores
+- bump version to - (b72bd19) - GitHub Action
+- - -
+
 ## 2.0.0 - 2023-12-15
 #### Bug Fixes
 - better formed client - (0441b56) - orgal
