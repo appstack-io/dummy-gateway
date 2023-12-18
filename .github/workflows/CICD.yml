@@ -40,7 +40,7 @@ jobs:
       - name: Client - Build
         working-directory: ./client
         run: |
-          npm run proto:generate-client
+          npm run proto:build
           npm run build
 
       - name: Client - Run Tests
