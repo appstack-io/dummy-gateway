@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 3.0.2 - 2023-12-20
+#### Bug Fixes
+- removed redundant ci files - (6eeb251) - orgal
+#### Miscellaneous Chores
+- bump version to - (dfed5ad) - GitHub Action
+- - -
+
 ## 3.0.1 - 2023-12-18
 #### Bug Fixes
 - no coverage because failing on empty.ts - (950da36) - orgal
