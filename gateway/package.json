@@ -1,5 +1,5 @@
 {
-  "name": "@appstack-io/gateway",
+  "name": "@appstack-io/dummy-gateway",
   "version": "3.0.0",
   "description": "",
   "author": {
@@ -8,7 +8,7 @@
   },
   "private": false,
   "license": "GPL-3.0",
-  "repository": "https://github.com/appstack-io/gateway.git",
+  "repository": "https://github.com/appstack-io/dummy-gateway.git",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
